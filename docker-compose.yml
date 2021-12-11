@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+      target: dev
+    volumes:
+      - ./api:/opt/app/api

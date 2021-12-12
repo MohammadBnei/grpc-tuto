@@ -1,0 +1,14 @@
+syntax = "proto3";
+package chat;
+
+option go_package = "/";
+
+message Message {
+  string body = 1;
+}
+
+// The greeting service definition.
+service ChatService {
+  // Sends a greeting
+  rpc SayHello (Message) returns (Message) {}
+}

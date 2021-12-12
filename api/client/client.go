@@ -7,8 +7,9 @@ import (
 
 	"context"
 
-	"github.com/mohammadbnei/grpc-tuto/chat"
+	"github.com/mohammadbnei/grpc-tuto/person"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func main() {
@@ -20,16 +21,25 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := chat.NewChatServiceClient(conn)
+	c := person.NewPersonServiceClient(conn)
 
-	for i := 0; i < 100; i++ {
-		message := fmt.Sprintf("%dxHello From Client!", i)
-		response, err := c.SayHello(context.Background(), &chat.Message{Body: message})
+	for i := 0; i < 3; i++ {
+		response, err := c.CreateUser(context.Background(), &person.Person{
+			Name:        fmt.Sprintf("hugo %d", i),
+			Email:       fmt.Sprintf("hugo%d@test.fr", i),
+			LastUpdated: timestamppb.Now(),
+		})
 		if err != nil {
-			log.Fatalf("Error when calling SayHello: %s", err)
+			log.Fatalf("Error when calling CreateUser: %s", err)
 		}
-		log.Printf("Response from server: %s", response.Body)
-		time.Sleep(time.Second * 3)
+		log.Printf("Response from server: %s", response.Id)
+		time.Sleep(time.Second)
 	}
+
+	response, err := c.GetUsers(context.Background(), &person.Empty{})
+	if err != nil {
+		log.Fatalf("Error when calling GetUsers: %s", err)
+	}
+	log.Printf("Response from server: %s", response.People)
 
 }

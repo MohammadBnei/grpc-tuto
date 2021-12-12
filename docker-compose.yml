@@ -8,3 +8,11 @@ services:
       target: dev
     volumes:
       - ./api:/opt/app/api
+
+  mongo:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=toor
+      - MONGO_INITDB_ROOT_PASSWORD=passdorw
+    ports:
+      - 27017:27017
